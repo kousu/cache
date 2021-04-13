@@ -47167,14 +47167,19 @@ function run() {
             }
             const state = utils.getCacheState();
             // Inputs are re-evaluted before the post action, so we want the original key used for restore
-            const primaryKey = core.getState(constants_1.State.CachePrimaryKey);
+            const prevPrimaryKey = core.getState(constants_1.State.CachePrimaryKey);
+            const primaryKey = core.getInput(constants_1.Inputs.Key, { required: true });
             if (!primaryKey) {
                 utils.logWarning(`Error retrieving key from state.`);
                 return;
             }
             if (utils.isExactKeyMatch(primaryKey, state)) {
                 core.info(`Cache hit occurred on the primary key ${primaryKey}, not saving cache.`);
+                core.info(`prevPrimaryKey=${prevPrimaryKey}`);
                 return;
+            }
+            else {
+                core.info(`Cache new or updated; was ${prevPrimaryKey}, now ${primaryKey}`);
             }
             const cachePaths = utils.getInputAsArray(constants_1.Inputs.Path, {
                 required: true
